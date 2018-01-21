@@ -1,6 +1,5 @@
 @echo off&setlocal enabledelayedexpansion
-D:
-cd D:/Onmyoji/
+cd /d "%~dp0"
 set /p num="你想打开几个客户端(0-4):"
 for /l %%i in (1,1,%num%) do "C:/Program Files/Sandboxie/start" /box:client%%i "C:/Program Files (x86)/Onmyoji/Launch" 
 echo 请将客户端调整到合适的大小
