@@ -12,8 +12,7 @@ time2 = 23 #second round end point
 time3 = 37 #third round end point
 startX,startY = 780, 480# press the ready button
 loadTime = 3
-bugFree = True
-tolerance = 30
+tolerance = 15
 
 def round(round_time):
 	cnt = 0
@@ -63,7 +62,8 @@ log = open("log.txt","w+")
 	
 def main():
 
-
+	
+	bugFree = True
 	print("script running for",rounds,"rounds")
 	print("script running for",rounds,"rounds",file = log)
 
@@ -76,15 +76,18 @@ def main():
 		if wechat :
 			itchat.send("time:"+time.strftime("%H:%M:%S", time.localtime())+"\tremaining "+str(rounds - i)+" rounds", toUserName=user)
 		
-		bugFree &= start()
-		
+		bugFree = start()
+		if not bugFree:
+			break
 		if control:
 			for j in range(3):
-				bugFree &= round(j)
+				bugFree = round(j)
+				if not bugFree:
+					break
 		else :
 			time.sleep(duration)
 		
-		bugFree &= getBonus()
+		bugFree = getBonus()
 		if not bugFree :
 			break
 	exitGame()
