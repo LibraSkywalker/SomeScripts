@@ -16,11 +16,9 @@ tolerance = 15
 
 def round(round_time):
 	cnt = 0
-	while not waitFor("ROUNDSTART",["OTHER"]):
+	while not waitFor("ROUNDSTART"):
 		cnt += 1
 		if (cnt > tolerance):
-			return False
-		if (checkScene() == "OTHER"):
 			return False
 	print("Round",round_time,"is processing")
 	print("Round",round_time,"is processing",file = log)
