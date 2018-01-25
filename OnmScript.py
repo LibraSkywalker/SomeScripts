@@ -23,7 +23,7 @@ def round(round_time):
 	for i in range(random.randint(5, 7)): #randomize click round
 		click(middleX, middleY)
 	
-	time.sleep(3)
+	time.sleep(1.5)
 
 def getBonus():
 	while not waitFor("BONUS"):

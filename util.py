@@ -12,10 +12,6 @@ import os
 interval = 10
 threshold = 25
 
-cancelX1,cancelY1 = 640, 420 #player1 cancel invitation
-cancelX2,cancelY2 = 1600, 420 #player2 cancel invitation
-cancelX3,cancelY3 = 640, 960 #player3 cancel invitation
-
 def indistinct_position(x,y): #randomize click point
 	deltaX =  random.randint(-interval, interval)
 	deltaY =  random.randint(-interval, interval)
@@ -29,9 +25,6 @@ def click(x,y):
 
 def dist(x,y):
 	return (abs(x[0]-y[0]) + abs(x[1]-y[1]) + abs(x[2] - y[2]))
-
-def cancel_invitation():
-	return click(cancelX1, cancelY1) + click(cancelX2, cancelY2) + click(cancelX3, cancelY3)
 	
 def checkScene(verbose = False):
 	img = controller.screenshot(region=(0, 0, 1920, 540))
@@ -45,11 +38,35 @@ def checkScene(verbose = False):
 		print("OTHER")
 	return "OTHER"
 
-
+def clearInvitation(verbose = False):
+	img = controller.screenshot(region=(0, 0, 1920, 1080))
+	result,position	= findMultiTarget(feature[-3:],img)
+	if result:
+		click(position[0],position[1])
+	
 def exitGame():
 	print('mission complete, close the client in 5 seconds')
 	time.sleep(5)
 	os.system('"C:\Program Files\Sandboxie\Start.exe"  /terminate_all')
+
+def findMultiTarget(data, img = None ):
+	if (img is None):
+		img = controller.screenshot(region=(0, 0, 960, 540))
+	if len(data) == 2 :
+		data = data + [0,0,0]
+	image = cv2.cvtColor(numpy.asarray(img), cv2.COLOR_RGB2BGR)
+	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1.2,20,param1=50,param2=40,minRadius=data[0][0],maxRadius=data[0][1])
+	if circles is None:
+		return False,(0,0)
+	
+	circles = numpy.uint16(numpy.around(circles))
+	#print(circles,data)
+	for i in range(len(data)):
+		for circle in circles[0]:
+			if dist(data[i][2:],list(circle)) < threshold:
+				return True,data[i][2:]
+	return False,[0,0,0]
 	
 def findTarget(data, img = None ):
 	if (img is None):
@@ -67,8 +84,8 @@ def findTarget(data, img = None ):
 	if data[2:] != [0,0,0]:
 		for circle in circles[0]:
 			if dist(data[2:],list(circle)) < threshold:
-				return True,(0,0)
-		return False,(0,0)
+				return True,data[2:]
+		return False,data[2:]
 	else :
 		return True,circles[0][0]
 
@@ -105,15 +122,14 @@ def argumentParsing():
 
 def waitFor(scene,retry = []):
 	retry = retry 
-	invite = ["INVITATION1","INVITATION2"]
 	print("waiting for",scene)
+	clearInvitation()
 	now = checkScene()
 	cnt = 0
 	while (cnt < 10 and now != scene) :
 		if (now in retry) :
 			return False
-		if (now in invite):
-			cancel_invitation()
+		clearInvitation()
 		now = checkScene()
 		cnt += 1
 	if cnt < 10 :
@@ -130,6 +146,6 @@ for line in data :
 	print(line)
 	scene_name.append(line[0])
 	feature.append(list(map(int,line[1:])))
-scene_num = len(scene_name) - 1
+scene_num = len(scene_name) - 4
 print(scene_name)
 print(feature)
