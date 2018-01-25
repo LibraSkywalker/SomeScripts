@@ -12,11 +12,17 @@ time2 = 23 #second round end point
 time3 = 37 #third round end point
 startX,startY = 780, 480# press the ready button
 loadTime = 3
+bugFree = True
+tolerance = 30
 
 def round(round_time):
+	cnt = 0
 	while not waitFor("ROUNDSTART",["OTHER"]):
-		if (checkScene == "OTHER"):
-			return
+		cnt += 1
+		if (cnt > tolerance):
+			return False
+		if (checkScene() == "OTHER"):
+			return False
 	print("Round",round_time,"is processing")
 	print("Round",round_time,"is processing",file = log)
 	time.sleep(1.2)
@@ -24,10 +30,14 @@ def round(round_time):
 		click(middleX, middleY)
 	
 	time.sleep(1.5)
+	return True
 
 def getBonus():
+	cnt = 0
 	while not waitFor("BONUS"):
-		time.sleep(0.05)
+		cnt += 1
+		if (cnt > tolerance):
+			return False
 	
 	for i in range(2):
 		click(startX,startY)
@@ -36,12 +46,17 @@ def getBonus():
 	for i in range(2):
 		click(startX,startY)
 		click(middleX, middleY)
+	return True
 	
 def start():
+	cnt = 0
 	while (not waitFor("TEAM")):
-		time.sleep(0.1)
+		cnt += 1
+		if (cnt > tolerance):
+			return False
 	click(startX,startY)
 	click(startX,startY)
+	return True
 	
 rounds,verbose,control,wechat,user = argumentParsing()
 log = open("log.txt","w+")
@@ -61,19 +76,26 @@ def main():
 		if wechat :
 			itchat.send("time:"+time.strftime("%H:%M:%S", time.localtime())+"\tremaining "+str(rounds - i)+" rounds", toUserName=user)
 		
-		start()
+		bugFree &= start()
 		
 		if control:
 			for j in range(3):
-				round(j)
+				bugFree &= round(j)
 		else :
 			time.sleep(duration)
 		
-		getBonus()
+		bugFree &= getBonus()
+		if not bugFree :
+			break
 	exitGame()
-	print("mission complete")
-	print("mission complete",file = log)
-	if wechat :
-		itchat.send("mission complete", toUserName=user)
-
+	if bugFree:
+		print("mission complete")
+		print("mission complete",file = log)
+		if wechat :
+			itchat.send("mission complete", toUserName=user)
+	else :
+		print("some error occured and the game was forced to end.")
+		print("some error occured and the game was forced to end.",file = log)
+		if wechat :
+			itchat.send("some error occured and the game was forced to end.", toUserName=user)
 main()
