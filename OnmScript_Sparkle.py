@@ -57,3 +57,4 @@ def main():
 	print("mission complete",file = log)
 	if wechat :
 		itchat.send("mission complete", toUserName=user)
+main()
