@@ -39,7 +39,7 @@ def checkScene(verbose = False):
 	return "OTHER"
 
 def clearInvitation(verbose = False):
-	img = controller.screenshot(region=(0, 0, 1920, 1080))
+	img = controller.screenshot()
 	result,position	= findMultiTarget(feature[-3:],img)
 	if result:
 		click(position[0],position[1])
@@ -51,7 +51,7 @@ def exitGame():
 
 def findMultiTarget(data, img = None ):
 	if (img is None):
-		img = controller.screenshot(region=(0, 0, 960, 540))
+		img = controller.screenshot()
 	if len(data) == 2 :
 		data = data + [0,0,0]
 	image = cv2.cvtColor(numpy.asarray(img), cv2.COLOR_RGB2BGR)
@@ -70,7 +70,7 @@ def findMultiTarget(data, img = None ):
 	
 def findTarget(data, img = None ):
 	if (img is None):
-		img = controller.screenshot(region=(0, 0, 960, 540))
+		img = controller.screenshot()
 	if len(data) == 2 :
 		data = data + [0,0,0]
 	image = cv2.cvtColor(numpy.asarray(img), cv2.COLOR_RGB2BGR)
