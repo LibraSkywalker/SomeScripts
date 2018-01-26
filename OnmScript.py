@@ -88,7 +88,6 @@ def main():
 		bugFree = getBonus()
 		if not bugFree :
 			break
-	exitGame()
 	if bugFree:
 		print("mission complete")
 		print("mission complete",file = log)
@@ -99,4 +98,8 @@ def main():
 		print("some error occured and the game was forced to end.",file = log)
 		if wechat :
 			itchat.send("some error occured and the game was forced to end.", toUserName=user)
+		controller.screenshot('erroropt.png')
+		
+		
+	exitGame()
 main()
