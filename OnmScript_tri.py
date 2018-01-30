@@ -59,6 +59,7 @@ def start():
 		if (cnt > tolerance):
 			return False
 	print("all set!")
+	capture("record")
 	click(startX,startY)
 	click(startX,startY)
 	return True

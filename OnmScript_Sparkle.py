@@ -27,11 +27,6 @@ def getBonus():
 		if (cnt > 20) :
 			click(startX,startY)
 			cnt = 0
-			
-def capture(name):
-	img = controller.screenshot(region=(0, 0, 1920, 540))
-	img.save(name+".jpg")
-	itchat.send_image(name+".jpg", toUserName='filehelper')
 
 rounds,verbose,control,wechat,user = argumentParsing()
 log = open("log.txt","w+")

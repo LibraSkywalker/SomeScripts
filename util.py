@@ -26,6 +26,10 @@ def click(x,y):
 def dist(x,y):
 	return (abs(x[0]-y[0]) + abs(x[1]-y[1]) + abs(x[2] - y[2]))
 	
+def capture(name):
+	img = controller.screenshot(name+".jpg")
+	itchat.send_image(name+".jpg", toUserName='filehelper')
+
 def checkScene(verbose = False):
 	img = controller.screenshot(region=(0, 0, 1920, 540))
 	for i in range(scene_num):
