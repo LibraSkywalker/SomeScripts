@@ -94,6 +94,8 @@ def findTarget(data, img = None ):
 		return True,circles[0][0]
 
 def allReady():
+	print("waiting for teamates")
+	time.sleep(0.1)
 	img = controller.screenshot(region=(0, 0, 1920, 1080))
 	hit,_=findTarget([20,30,655,187,22],img)
 	return hit

@@ -54,9 +54,10 @@ def start():
 		cnt += 1
 		if (cnt > tolerance):
 			return False
+	cnt = 0
 	while (not allReady()):
 		cnt += 1
-		if (cnt > tolerance):
+		if (cnt > tolerance * 5):
 			return False
 	print("all set!")
 	capture("record")
