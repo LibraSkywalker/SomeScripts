@@ -60,6 +60,7 @@ def start():
 		if (cnt > tolerance * 5):
 			return False
 	print("all set!")
+	time.sleep(0.5)
 	capture("record")
 	click(startX,startY)
 	click(startX,startY)
@@ -108,7 +109,7 @@ def main():
 		print("some error occured and the game was forced to end.",file = log)
 		if wechat :
 			itchat.send("some error occured and the game was forced to end.", toUserName=user)
-		controller.screenshot('erroropt.png')
+		capture("erroropt")
 		
 		
 	exitGame()
