@@ -11,14 +11,14 @@ time1 = 13 #first round end point
 time2 = 23 #second round end point
 time3 = 37 #third round end point
 startX,startY = 780, 480# press the ready button
-loadTime = 3
+loadTime = 2
 tolerance = 15
 
 def round(round_time):
 	cnt = 0
 	while not waitFor("ROUNDSTART"):
 		cnt += 1
-		if (cnt > tolerance):
+		if (cnt > tolerance * 2):
 			return False
 	print("Round",round_time,"is processing")
 	print("Round",round_time,"is processing",file = log)
@@ -39,7 +39,7 @@ def getBonus():
 	for i in range(2):
 		click(startX,startY)
 		click(middleX, middleY)
-	time.sleep(2)
+	time.sleep(loadTime)
 	for i in range(2):
 		click(startX,startY)
 		click(middleX, middleY)

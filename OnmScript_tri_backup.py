@@ -2,6 +2,7 @@ from util import *
 import numpy
 import time 
 import math
+import argparse
 import os
 import itchat
 
@@ -12,64 +13,53 @@ time2 = 23 #second round end point
 time3 = 37 #third round end point
 startX,startY = 780, 480# press the ready button
 lastX,lastY = 780, 1020
-loadTime = 0.5
-tolerance = 15
+loadTime = 3
 
 def round(round_time):
-	cnt = 0
-	while not waitFor("ROUNDSTART"):
-		cnt += 1
-		if (cnt > tolerance * 2):
-			return False
+	while not waitFor("ROUNDSTART",["OTHER"]):
+		if (checkScene == "OTHER"):
+			return
 	print("Round",round_time,"is processing")
 	print("Round",round_time,"is processing",file = log)
 	time.sleep(1.2)
 	for i in range(random.randint(5, 7)): #randomize click round
 		click(middleX, middleY)
 	
-	time.sleep(1.5)
-	return True
+	time.sleep(3)
 
 def getBonus():
-	cnt = 0
 	while not waitFor("BONUS"):
-		cnt += 1
-		if (cnt > tolerance):
-			return False
+		time.sleep(0.05)
 	
 	for i in range(2):
 		click(startX,startY)
 		click(middleX, middleY)
 		click(lastX, lastY)
-	time.sleep(loadTime)
+	time.sleep(1)
 	for i in range(2):
 		click(startX,startY)
 		click(middleX, middleY)
 		click(lastX, lastY)
-	return True
+
+def exitGame():
+	print('mission complete, close the client in 5 seconds')
+	time.sleep(5)
+	os.system("taskkill /F /IM client.exe")
 	
 def start():
-	cnt = 0
 	while (not waitFor("TEAM")):
-		cnt += 1
-		if (cnt > tolerance):
-			return False
+		time.sleep(0.1)
 	while (not allReady()):
-		cnt += 1
-		if (cnt > tolerance):
-			return False
+		time.sleep(0.1)
 	print("all set!")
 	click(startX,startY)
 	click(startX,startY)
-	return True
 	
-rounds,verbose,control,wechat,user = argumentParsing()
 log = open("log.txt","w+")
-	
 def main():
 
-	
-	bugFree = True
+	rounds,verbose,control,wechat,user = argumentParsing()
+
 	print("script running for",rounds,"rounds")
 	print("script running for",rounds,"rounds",file = log)
 
@@ -82,32 +72,19 @@ def main():
 		if wechat :
 			itchat.send("time:"+time.strftime("%H:%M:%S", time.localtime())+"\tremaining "+str(rounds - i)+" rounds", toUserName=user)
 		
-		bugFree = start()
-		if not bugFree:
-			break
+		start()
+		
 		if control:
 			for j in range(3):
-				bugFree = round(j)
-				if not bugFree:
-					break
+				round(j)
 		else :
 			time.sleep(duration)
 		
-		bugFree = getBonus()
-		if not bugFree :
-			break
-	if bugFree:
-		print("mission complete")
-		print("mission complete",file = log)
-		if wechat :
-			itchat.send("mission complete", toUserName=user)
-	else :
-		print("some error occured and the game was forced to end.")
-		print("some error occured and the game was forced to end.",file = log)
-		if wechat :
-			itchat.send("some error occured and the game was forced to end.", toUserName=user)
-		controller.screenshot('erroropt.png')
-		
-		
+		getBonus()
 	exitGame()
+	print("mission complete")
+	print("mission complete",file = log)
+	if wechat :
+		itchat.send("mission complete", toUserName=user)
+
 main()
